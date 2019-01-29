@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.0.003">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.0.003" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="9.0.003" expanded="true" height="68" name="Retrieve clients" width="90" x="45" y="34">
+        <parameter key="repository_entry" value="../data/clients"/>
+      </operator>
+      <operator activated="true" class="generate_attributes" compatibility="9.0.003" expanded="true" height="82" name="Calculate Age and isMale" width="90" x="313" y="34">
+        <list key="function_descriptions">
+          <parameter key="birthdate" value="date_diff(birthdate,date_now())/(1000*60*60*24*365.25)"/>
+          <parameter key="gender" value="if(gender==&quot;M&quot;,1,0)"/>
+        </list>
+        <parameter key="keep_all" value="true"/>
+      </operator>
+      <operator activated="true" class="rename" compatibility="9.0.003" expanded="true" height="82" name="Rename" width="90" x="514" y="34">
+        <parameter key="old_name" value="birthdate"/>
+        <parameter key="new_name" value="age"/>
+        <list key="rename_additional_attributes"/>
+      </operator>
+      <connect from_op="Retrieve clients" from_port="output" to_op="Calculate Age and isMale" to_port="example set input"/>
+      <connect from_op="Calculate Age and isMale" from_port="example set output" to_op="Rename" to_port="example set input"/>
+      <connect from_op="Rename" from_port="example set output" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <description align="center" color="yellow" colored="false" height="105" resized="false" width="180" x="76" y="232">Calculate Age for a given client from birthdate&lt;br/&gt;Convert M/F to 1/0&lt;br/&gt;</description>
+    </process>
+  </operator>
+</process>
